@@ -39,3 +39,5 @@
 
 ![KakaoTalk_20231214_170727964](https://github.com/YouHyeunWoo/E-commerce/assets/141150761/762d705f-39d3-4957-a595-64e4617af4f0)
 
+![E-commerce2](https://github.com/YouHyeunWoo/E-commerce/assets/141150761/f6947239-8ded-4d05-af32-f1213e2897ed)
+
