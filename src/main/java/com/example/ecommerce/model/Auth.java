@@ -1,6 +1,7 @@
 package com.example.ecommerce.model;
 
 import com.example.ecommerce.domain.MemberEntity;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ public class Auth {
 
     //회원가입때 사용할 클래스
     @Data
+    @Builder
     public static class Register{
         private String name;
         private String password;

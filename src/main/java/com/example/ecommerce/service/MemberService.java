@@ -44,7 +44,6 @@ public class MemberService implements UserDetailsService {
         if(!passwordEncoder.matches(member.getPassword(), memberEntity.getPassword())) {
             throw new RuntimeException("잘못된 비밀번호 입니다");
         }
-
         return memberEntity;
     }
 }
