@@ -46,6 +46,7 @@ public class TokenProvider {
     //토큰의 subject(사용자 이름) 가져오기
     private String getName(String token) {
         return this.parseClaims(token).getSubject();
+        //jwt토큰의 body 부분에서 claim의 subject로 넣어줬던 이름을 가져옴
     }
 
     public Authentication getAuthentication(String jwt) {
@@ -72,6 +73,7 @@ public class TokenProvider {
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(this.secretKey)
-                .parseClaimsJws(token).getBody();
+                .parseClaimsJws(token).getBody(); 
+        //jwt토큰은 header.body.signature로 이루어져있다. 그 중 body부분을 가져옴
     }
 }
