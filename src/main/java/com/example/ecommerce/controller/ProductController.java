@@ -1,6 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.domain.ProductEntity;
+import com.example.ecommerce.model.DeleteProduct;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,16 @@ public class ProductController {
             @RequestHeader(value = "Authorization") String totalToken,
             @RequestBody Product.Registration request) {
         ProductEntity productEntity =
-                this.productService.register(totalToken, request);
+                this.productService.registerProduct(totalToken, request);
 
         return Product.Response.fromProductEntity(productEntity);
+    }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole(SELLER)")
+    public DeleteProduct.Response productRemove(
+            @RequestHeader(value = "Authorization") String totalToken,
+            @RequestBody DeleteProduct.Request deleteRequest) {
+        return this.productService.deleteProduct(totalToken, deleteRequest);
     }
 }

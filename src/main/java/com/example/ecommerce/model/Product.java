@@ -40,7 +40,7 @@ public class Product {
 
         public static Response fromProductEntity(ProductEntity productEntity) {
             return Response.builder()
-                    .productId(productEntity.getId())
+                    .productId(productEntity.getProductId())
                     .productName(productEntity.getProductName())
                     .price(productEntity.getPrice())
                     .amount(productEntity.getAmount())
