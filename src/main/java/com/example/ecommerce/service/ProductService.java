@@ -3,6 +3,7 @@ package com.example.ecommerce.service;
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
 import com.example.ecommerce.model.DeleteProduct;
+import com.example.ecommerce.model.GetProduct;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.repository.MemberRepository;
 import com.example.ecommerce.repository.ProductRepository;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +29,6 @@ public class ProductService {
 
     //상품 등록
     //판매자의 아이디가 존재하는지 확인 >> 존재하면 상품 등록 가능
-    //같은 이름의 상품은 여러개 등록될 수 있다.
     public ProductEntity registerProduct(String totalToken, Product.Registration product) {
         String userName = this.getUserName(totalToken);
 
@@ -34,8 +37,34 @@ public class ProductService {
         return productRepository.save(product.toEntity(memberEntity));
     }
 
+    //상품 검색(판매자용)
+    //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
+    public List<GetProduct> inquiryProduct(String totalToken) {
+        String userName = this.getUserName(totalToken);
+
+        MemberEntity memberEntity = getMemberEntity(userName);
+
+        List<ProductEntity> productEntityList =
+                this.productRepository.findAllByMemberEntity(memberEntity);
+
+        if (productEntityList.isEmpty()) {
+            throw new RuntimeException("등록된 상품이 없습니다");
+        }
+
+        return productEntityList.stream().map(e -> new GetProduct(e.getProductId(),
+                        e.getPrice(), e.getAmount(), e.getExplanation()))
+                .collect(Collectors.toList());
+    }
+
+    //상품 검색(고객용)
+    //상품의 이름을 입력하여 검색 >> 상품의 이름과 일치하는 모든 상품을 리스트로 만들어 반환
+    //가장 최신에 등록된 상품 순으로 검색
+
+
+
     //상품 삭제
     //판매자 아이디와 상품 이름으로 상품이 존재하는지 확인
+    //존재하면 상품 삭제
     public DeleteProduct.Response deleteProduct(String totalToken, DeleteProduct.Request removeProduct) {
         String userName = this.getUserName(totalToken);
 
@@ -70,4 +99,6 @@ public class ProductService {
         return Jwts.parser().setSigningKey(secretKey)
                 .parseClaimsJws(token).getBody().getSubject();
     }
+
+
 }
