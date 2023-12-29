@@ -1,31 +1,19 @@
 package com.example.ecommerce.model;
 
-import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-public class Product {
+public class ModifyProduct {
 
     @Data
-    public static class Registration {
+    public static class Request {
         private String productName;
         private Long price;
         private Long amount;
         private String explanation;
-
-        public ProductEntity toEntity(MemberEntity memberEntity) {
-            return ProductEntity.builder()
-                    .memberEntity(memberEntity)
-                    .productName(this.productName)
-                    .price(this.price)
-                    .amount(this.amount)
-                    .explanation(this.explanation)
-                    .registerDate(LocalDateTime.now())
-                    .build();
-        }
     }
 
     @Data
@@ -36,16 +24,18 @@ public class Product {
         private Long price;
         private Long amount;
         private String explanation;
-        private String sellerName;
+        private LocalDateTime registerDate;
+        private LocalDateTime modifiedDate;
 
-        public static Response fromProductEntity(ProductEntity productEntity) {
+        public static Response fromEntity(ProductEntity productEntity){
             return Response.builder()
                     .productId(productEntity.getProductId())
                     .productName(productEntity.getProductName())
                     .price(productEntity.getPrice())
                     .amount(productEntity.getAmount())
-                    .sellerName(productEntity.getMemberEntity().getName())
                     .explanation(productEntity.getExplanation())
+                    .registerDate(productEntity.getRegisterDate())
+                    .modifiedDate(productEntity.getModifiedDate())
                     .build();
         }
     }

@@ -4,7 +4,8 @@ import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
 import com.example.ecommerce.model.DeleteProduct;
 import com.example.ecommerce.model.GetProduct;
-import com.example.ecommerce.model.Product;
+import com.example.ecommerce.model.ModifyProduct;
+import com.example.ecommerce.model.RegisterProduct;
 import com.example.ecommerce.repository.MemberRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,17 +31,25 @@ public class ProductService {
 
     //상품 등록
     //판매자의 아이디가 존재하는지 확인 >> 존재하면 상품 등록 가능
-    public ProductEntity registerProduct(String totalToken, Product.Registration product) {
+    //판매자는 자신이 등록한 동일한 이름의 상품은 등록 불가
+    public ProductEntity registerProduct(String totalToken, RegisterProduct.Registration product) {
         String userName = this.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
+
+        boolean exists = this.productRepository.existsByProductNameAndMemberEntity(
+                product.getProductName(), memberEntity);
+
+        if(exists){
+            throw new RuntimeException("동일한 이름의 상품이 이미 등록되어 있습니다.");
+        }
 
         return productRepository.save(product.toEntity(memberEntity));
     }
 
     //상품 검색(판매자용)
     //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
-    public List<GetProduct> inquiryProduct(String totalToken) {
+    public List<GetProduct> searchProduct(String totalToken) {
         String userName = this.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
@@ -61,6 +71,26 @@ public class ProductService {
     //가장 최신에 등록된 상품 순으로 검색
 
 
+
+
+
+    //상품 수정(판매자용)
+    //상품 상품의 이름과 그 상품을 등록한 판매자의 아이디가 일치하는지 확인
+    //상품 update는 ProductEntity 내부에 updateProduct 메소드를 만들어 update진행
+    @Transactional
+    public ProductEntity modifyProduct(String totalToken, ModifyProduct.Request request) {
+        String userName = this.getUserName(totalToken);
+
+        MemberEntity memberEntity = this.getMemberEntity(userName);
+
+        ProductEntity productEntity = this.productRepository
+                .findByProductNameAndMemberEntity(request.getProductName(), memberEntity)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다"));
+
+        productEntity.updateProduct(request.getPrice(), request.getAmount(), request.getExplanation());
+
+        return this.productRepository.save(productEntity);
+    }
 
     //상품 삭제
     //판매자 아이디와 상품 이름으로 상품이 존재하는지 확인
@@ -99,6 +129,7 @@ public class ProductService {
         return Jwts.parser().setSigningKey(secretKey)
                 .parseClaimsJws(token).getBody().getSubject();
     }
+
 
 
 }

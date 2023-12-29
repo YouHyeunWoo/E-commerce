@@ -3,7 +3,8 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.domain.ProductEntity;
 import com.example.ecommerce.model.DeleteProduct;
 import com.example.ecommerce.model.GetProduct;
-import com.example.ecommerce.model.Product;
+import com.example.ecommerce.model.ModifyProduct;
+import com.example.ecommerce.model.RegisterProduct;
 import com.example.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,23 +23,35 @@ public class ProductController {
     //상품 등록
     @PostMapping("/registration")
     @PreAuthorize("hasRole(SELLER)")
-    public Product.Response productRegistration(
+    public RegisterProduct.Response productRegistration(
             @RequestHeader(value = "Authorization") String totalToken,
-            @RequestBody Product.Registration request) {
-        ProductEntity productEntity =
-                this.productService.registerProduct(totalToken, request);
-
-        return Product.Response.fromProductEntity(productEntity);
+            @RequestBody RegisterProduct.Registration request) {
+        return RegisterProduct.Response
+                .fromProductEntity(this.productService
+                        .registerProduct(totalToken, request));
     }
 
     //내가 등록한 상품 조회
     //판매자용 상품 검색 기능
-    @GetMapping("/inquiry/seller")
+    @GetMapping("/search/seller")
     @PreAuthorize("hasRole(SELLER)")
-    public List<GetProduct> getProduct(@RequestHeader(value = "Authorization") String totalToken){
-        return this.productService.inquiryProduct(totalToken);
+    public List<GetProduct> searchProduct(
+            @RequestHeader(value = "Authorization") String totalToken){
+        return this.productService.searchProduct(totalToken);
     }
 
+    //상품 수정
+    @PutMapping("/modify")
+    @PreAuthorize("hasRole(SELLER)")
+    public ModifyProduct.Response modifyProduct(
+            @RequestHeader(value = "Authorization") String totalToken,
+            @RequestBody ModifyProduct.Request request){
+        return ModifyProduct.Response
+                .fromEntity(this.productService
+                        .modifyProduct(totalToken, request));
+    }
+
+    //상품 삭제
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole(SELLER)")
     public DeleteProduct.Response productRemove(

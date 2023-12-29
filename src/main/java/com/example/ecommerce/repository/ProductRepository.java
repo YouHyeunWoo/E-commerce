@@ -7,11 +7,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     boolean existsByProductNameAndMemberEntity(String productName, MemberEntity memberEntity);
+
+    Optional<ProductEntity> findByProductNameAndMemberEntity(String productName, MemberEntity memberEntity);
 
     List<ProductEntity> findAllByMemberEntity(MemberEntity memberEntity);
 

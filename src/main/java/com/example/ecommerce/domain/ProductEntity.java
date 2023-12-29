@@ -25,10 +25,16 @@ public class ProductEntity {
 
     private LocalDateTime registerDate;
 
-    @Setter
     private LocalDateTime modifiedDate;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
+
+    public void updateProduct(Long price, Long amount, String explanation){
+        this.amount = amount;
+        this.price = price;
+        this.explanation = explanation;
+        this.modifiedDate = LocalDateTime.now();
+    }
 }
