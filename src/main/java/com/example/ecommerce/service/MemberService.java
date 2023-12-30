@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,11 +40,31 @@ public class MemberService implements UserDetailsService {
     //로그인 메소드
     //입력받은 아이디 비밀번호로 계정이 존재하는지, 비밀번호가 일치하는지 확인
     public MemberEntity logIn(Auth.LogIn member){
-        MemberEntity memberEntity = this.memberRepository.findByName(member.getName())
+        MemberEntity memberEntity = getMemberEntity(member.getName());
+        matchPassword(member.getPassword(), memberEntity);
+        return memberEntity;
+    }
+
+    //회원 탈퇴 메소드
+    //입력받은 아이디가 존재하는지 확인 >> 비밀번호가 일치하는지 확인
+    //일치하면 데이터 제거
+    @Transactional
+    public String withdrawal(Auth.Withdrawal member){
+        MemberEntity memberEntity = getMemberEntity(member.getName());
+        matchPassword(member.getPassword(), memberEntity);
+        this.memberRepository.deleteByName(memberEntity.getName());
+        return "회원 탈퇴가 정상적으로 완료되었습니다";
+    }
+
+    private MemberEntity getMemberEntity(String member) {
+        MemberEntity memberEntity = this.memberRepository.findByName(member)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다"));
-        if(!passwordEncoder.matches(member.getPassword(), memberEntity.getPassword())) {
+        return memberEntity;
+    }
+
+    private void matchPassword(String password, MemberEntity memberEntity) {
+        if(!passwordEncoder.matches(password, memberEntity.getPassword())) {
             throw new RuntimeException("잘못된 비밀번호 입니다");
         }
-        return memberEntity;
     }
 }

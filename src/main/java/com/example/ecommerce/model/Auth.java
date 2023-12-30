@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Auth {
 
-    //회원가입때 사용할 클래스
+    //회원가입에 사용할 클래스
     @Data
     @Builder
     public static class Register{
@@ -31,9 +31,16 @@ public class Auth {
         }
     }
 
-    //로그인때 사용할 클래스
+    //로그인에 사용할 클래스
     @Data
     public static class LogIn{
+        private String name;
+        private String password;
+    }
+
+    //회원 탈퇴에 사용할 클래스
+    @Data
+    public static class Withdrawal{
         private String name;
         private String password;
     }
