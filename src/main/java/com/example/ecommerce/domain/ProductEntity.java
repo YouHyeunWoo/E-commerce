@@ -29,7 +29,7 @@ public class ProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    private MemberEntity member;
 
     public void updateProduct(Long price, Long amount, String explanation){
         this.amount = amount;
