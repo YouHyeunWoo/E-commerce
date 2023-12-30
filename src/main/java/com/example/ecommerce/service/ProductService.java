@@ -40,7 +40,7 @@ public class ProductService {
         boolean exists = this.productRepository.existsByProductNameAndMemberEntity(
                 product.getProductName(), memberEntity);
 
-        if(exists){
+        if (exists) {
             throw new RuntimeException("동일한 이름의 상품이 이미 등록되어 있습니다.");
         }
 
@@ -49,7 +49,7 @@ public class ProductService {
 
     //상품 검색(판매자용)
     //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
-    public List<GetProduct> searchProduct(String totalToken) {
+    public List<GetProduct.Seller> searchProduct(String totalToken) {
         String userName = this.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
@@ -61,18 +61,28 @@ public class ProductService {
             throw new RuntimeException("등록된 상품이 없습니다");
         }
 
-        return productEntityList.stream().map(e -> new GetProduct(e.getProductId(),
+        return productEntityList.stream().map(e -> new GetProduct.Seller(e.getProductId(),
                         e.getPrice(), e.getAmount(), e.getExplanation()))
                 .collect(Collectors.toList());
     }
 
-    //상품 검색(고객용)
+    //상품 검색 >> 로그인 하지 않은 사용자도 이용 가능
     //상품의 이름을 입력하여 검색 >> 상품의 이름과 일치하는 모든 상품을 리스트로 만들어 반환
     //가장 최신에 등록된 상품 순으로 검색
+    public List<GetProduct.Client> searchByProductName(String productName) {
+        List<ProductEntity> productEntityList =
+                this.productRepository.findAllByProductName(productName);
 
+        if (productEntityList.isEmpty()) {
+            throw new RuntimeException("등록된 상품이 없습니다");
+        }
 
-
-
+        return productEntityList.stream().map(e -> new GetProduct.Client(e.getProductId(),
+                        e.getPrice(), e.getAmount(), e.getExplanation(),
+                        e.getRegisterDate(),
+                        e.getModifiedDate()))
+                .collect(Collectors.toList());
+    }
 
     //상품 수정(판매자용)
     //상품 상품의 이름과 그 상품을 등록한 판매자의 아이디가 일치하는지 확인
@@ -129,7 +139,4 @@ public class ProductService {
         return Jwts.parser().setSigningKey(secretKey)
                 .parseClaimsJws(token).getBody().getSubject();
     }
-
-
-
 }
