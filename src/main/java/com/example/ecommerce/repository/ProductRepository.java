@@ -19,6 +19,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     List<ProductEntity> findAllByMemberEntity(MemberEntity memberEntity);
 
+    Optional<ProductEntity> findByProductId(Long productId);
+
     //날짜순 내림차순(최근에 등록된 날짜 순으로) 정렬을 위한 query
     @Query("select m from product m where m.productName = :productName order by m.registerDate desc")
     List<ProductEntity> findAllByProductName(String productName);
