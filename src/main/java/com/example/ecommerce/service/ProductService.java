@@ -8,10 +8,9 @@ import com.example.ecommerce.model.ModifyProduct;
 import com.example.ecommerce.model.RegisterProduct;
 import com.example.ecommerce.repository.MemberRepository;
 import com.example.ecommerce.repository.ProductRepository;
-import io.jsonwebtoken.Jwts;
+import com.example.ecommerce.security.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +24,11 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
 
-    private static final String TOKEN_PREFIX = "Bearer";
-    @Value("{spring.jwt.secret}")
-    private String secretKey;
-
     //상품 등록
     //판매자의 아이디가 존재하는지 확인 >> 존재하면 상품 등록 가능
     //판매자는 자신이 등록한 동일한 이름의 상품은 등록 불가
     public ProductEntity registerProduct(String totalToken, RegisterProduct.Registration product) {
-        String userName = this.getUserName(totalToken);
+        String userName = JwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 
@@ -50,7 +45,7 @@ public class ProductService {
     //상품 검색(판매자용)
     //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
     public List<GetProduct.Seller> searchProduct(String totalToken) {
-        String userName = this.getUserName(totalToken);
+        String userName = JwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 
@@ -89,7 +84,7 @@ public class ProductService {
     //상품 update는 ProductEntity 내부에 updateProduct 메소드를 만들어 update진행
     @Transactional
     public ProductEntity modifyProduct(String totalToken, ModifyProduct.Request request) {
-        String userName = this.getUserName(totalToken);
+        String userName = JwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = this.getMemberEntity(userName);
 
@@ -106,7 +101,7 @@ public class ProductService {
     //판매자 아이디와 상품 이름으로 상품이 존재하는지 확인
     //존재하면 상품 삭제
     public DeleteProduct.Response deleteProduct(String totalToken, DeleteProduct.Request removeProduct) {
-        String userName = this.getUserName(totalToken);
+        String userName = JwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 
@@ -130,13 +125,5 @@ public class ProductService {
     private MemberEntity getMemberEntity(String userName) {
         return this.memberRepository.findByName(userName)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다."));
-    }
-
-    //토큰의 앞 Bearer 부분을 제거한 후 토큰의 body 부분의 이름을 추출
-    private String getUserName(String totalToken) {
-        String token = totalToken.substring(TOKEN_PREFIX.length());
-
-        return Jwts.parser().setSigningKey(secretKey)
-                .parseClaimsJws(token).getBody().getSubject();
     }
 }
