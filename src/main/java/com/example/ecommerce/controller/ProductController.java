@@ -5,7 +5,8 @@ import com.example.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +41,10 @@ public class ProductController {
     //고객용 상품 검색 기능 모든 사용자 이용 가능
     //상품 이름을 입력 >> 최근에 등록된 상품 순으로 검색
     @GetMapping("/product/{productName}")
-    public SearchProductResponse productSearchForClient(@PathVariable String productName) {
+    public SearchProductResponse productSearchForClient(@PathVariable String productName,
+                                                        @PageableDefault(size = 5) Pageable pageable) {
         List<GetProduct.Client> productList =
-                this.productService.searchByProductName(productName);
+                this.productService.searchByProductName(productName, pageable);
 
         return new SearchProductResponse(productName, productList);
     }

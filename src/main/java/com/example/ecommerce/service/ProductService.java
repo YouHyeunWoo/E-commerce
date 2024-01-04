@@ -11,6 +11,8 @@ import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.security.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,9 +66,9 @@ public class ProductService {
     //상품 검색 >> 로그인 하지 않은 사용자도 이용 가능
     //상품의 이름을 입력하여 검색 >> 상품의 이름과 일치하는 모든 상품을 리스트로 만들어 반환
     //가장 최신에 등록된 상품 순으로 검색
-    public List<GetProduct.Client> searchByProductName(String productName) {
-        List<ProductEntity> productEntityList =
-                this.productRepository.findAllByProductName(productName);
+    public List<GetProduct.Client> searchByProductName(String productName, Pageable pageable) {
+        Page<ProductEntity> productEntityList =
+                this.productRepository.findAllByProductName(productName, pageable);
 
         if (productEntityList.isEmpty()) {
             throw new RuntimeException("등록된 상품이 없습니다");
@@ -74,6 +76,8 @@ public class ProductService {
 
         return productEntityList.stream().map(e -> new GetProduct.Client(e.getProductId(),
                         e.getPrice(), e.getAmount(), e.getExplanation(),
+                        e.getMemberEntity().getName(),
+                        e.getMemberEntity().getPhone(),
                         e.getRegisterDate(),
                         e.getModifiedDate()))
                 .collect(Collectors.toList());

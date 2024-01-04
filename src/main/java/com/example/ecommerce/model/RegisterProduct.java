@@ -22,7 +22,7 @@ public class RegisterProduct {
 
         public ProductEntity toEntity(MemberEntity memberEntity) {
             return ProductEntity.builder()
-                    .member(memberEntity)
+                    .memberEntity(memberEntity)
                     .productName(this.productName)
                     .price(this.price)
                     .amount(this.amount)
@@ -48,7 +48,7 @@ public class RegisterProduct {
                     .productName(productEntity.getProductName())
                     .price(productEntity.getPrice())
                     .amount(productEntity.getAmount())
-                    .sellerName(productEntity.getMember().getName())
+                    .sellerName(productEntity.getMemberEntity().getName())
                     .explanation(productEntity.getExplanation())
                     .build();
         }
