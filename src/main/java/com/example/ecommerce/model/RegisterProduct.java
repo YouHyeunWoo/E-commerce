@@ -3,6 +3,7 @@ package com.example.ecommerce.model;
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,9 +15,9 @@ public class RegisterProduct {
     public static class Registration {
         @NotBlank
         private String productName;
-        @NotBlank
+        @NotNull
         private Long price;
-        @NotBlank
+        @NotNull
         private Long amount;
         private String explanation;
 

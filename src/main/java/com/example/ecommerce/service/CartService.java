@@ -17,19 +17,15 @@ public class CartService {
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
+    private final JwtToken jwtToken;
 
     public CartEntity putIn(Long productId, String totalToken, Cart.Request product) {
-        String userName = JwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
+        String userName = jwtToken.getUserName(totalToken);
 
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));
-
-        if (productEntity.getProductName() != product.getProductName()) {
-
-        }
+        MemberEntity memberEntity = this.memberRepository.findByName(userName)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
 
         if (product.getAmount() > productEntity.getAmount()) {
             throw new RuntimeException("재고가 부족합니다.");

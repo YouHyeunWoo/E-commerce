@@ -25,12 +25,13 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final JwtToken jwtToken;
 
     //상품 등록
     //판매자의 아이디가 존재하는지 확인 >> 존재하면 상품 등록 가능
     //판매자는 자신이 등록한 동일한 이름의 상품은 등록 불가
     public ProductEntity registerProduct(String totalToken, RegisterProduct.Registration product) {
-        String userName = JwtToken.getUserName(totalToken);
+        String userName = jwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 
@@ -47,7 +48,7 @@ public class ProductService {
     //상품 검색(판매자용)
     //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
     public List<GetProduct.Seller> searchProduct(String totalToken) {
-        String userName = JwtToken.getUserName(totalToken);
+        String userName = jwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 
@@ -88,7 +89,7 @@ public class ProductService {
     //상품 update는 ProductEntity 내부에 updateProduct 메소드를 만들어 update진행
     @Transactional
     public ProductEntity modifyProduct(String totalToken, ModifyProduct.Request request) {
-        String userName = JwtToken.getUserName(totalToken);
+        String userName = jwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = this.getMemberEntity(userName);
 
@@ -105,7 +106,7 @@ public class ProductService {
     //판매자 아이디와 상품 이름으로 상품이 존재하는지 확인
     //존재하면 상품 삭제
     public DeleteProduct.Response deleteProduct(String totalToken, DeleteProduct.Request removeProduct) {
-        String userName = JwtToken.getUserName(totalToken);
+        String userName = jwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = getMemberEntity(userName);
 

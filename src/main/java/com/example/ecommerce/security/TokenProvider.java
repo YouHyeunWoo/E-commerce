@@ -39,7 +39,7 @@ public class TokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 생성 시간
                 .setExpiration(expireDate) //토큰 만료 시간
-                .signWith(SignatureAlgorithm.HS512, secretKey) //토큰생성 알고리즘, 비밀키
+                .signWith(SignatureAlgorithm.HS512, this.secretKey) //토큰생성 알고리즘, 비밀키
                 .compact();
     }
 
@@ -69,11 +69,11 @@ public class TokenProvider {
         return !claims.getExpiration().before(new Date());
     }
 
-    //token안의 Claims 파싱
     private Claims parseClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(this.secretKey)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token).getBody();
         //jwt토큰은 header.body.signature로 이루어져있다. 그 중 body부분을 가져옴
     }
+
 }

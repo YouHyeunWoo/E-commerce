@@ -2,7 +2,6 @@ package com.example.ecommerce.model;
 
 import com.example.ecommerce.domain.MemberEntity;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +17,11 @@ public class Auth {
     public static class Register {
         @NotBlank
         private String name;
-        @NotEmpty
+        @NotBlank
         private String password;
-        @NotNull
+        @NotBlank
         private String phone;
-        @NotNull
+        @NotBlank
         private String address;
         @NotNull
         private List<String> roles;
