@@ -2,14 +2,14 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.Cart;
 import com.example.ecommerce.service.CartService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@AllArgsConstructor
 @Slf4j
+@RestController
+@RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
 

@@ -30,7 +30,7 @@ public class MemberService implements UserDetailsService {
         if (existsName) {
             throw new RuntimeException("존재하는 아이디 입니다");
         }
-        if(existsPhoneNumber){
+        if (existsPhoneNumber) {
             throw new RuntimeException("존재하는 핸드폰번호 입니다");
         }
         register.setPassword(passwordEncoder.encode(register.getPassword()));
@@ -39,7 +39,7 @@ public class MemberService implements UserDetailsService {
 
     //로그인 메소드
     //입력받은 아이디 비밀번호로 계정이 존재하는지, 비밀번호가 일치하는지 확인
-    public MemberEntity logIn(Auth.LogIn member){
+    public MemberEntity logIn(Auth.LogIn member) {
         MemberEntity memberEntity = getMemberEntity(member.getName());
         matchPassword(member.getPassword(), memberEntity);
         return memberEntity;
@@ -49,7 +49,7 @@ public class MemberService implements UserDetailsService {
     //입력받은 아이디가 존재하는지 확인 >> 비밀번호가 일치하는지 확인
     //일치하면 데이터 제거
     @Transactional
-    public String withdrawal(Auth.Withdrawal member){
+    public String withdrawal(Auth.Withdrawal member) {
         MemberEntity memberEntity = getMemberEntity(member.getName());
         matchPassword(member.getPassword(), memberEntity);
         this.memberRepository.deleteByName(memberEntity.getName());
@@ -63,7 +63,7 @@ public class MemberService implements UserDetailsService {
     }
 
     private void matchPassword(String password, MemberEntity memberEntity) {
-        if(!passwordEncoder.matches(password, memberEntity.getPassword())) {
+        if (!passwordEncoder.matches(password, memberEntity.getPassword())) {
             throw new RuntimeException("잘못된 비밀번호 입니다");
         }
     }

@@ -11,7 +11,7 @@ public class DeleteProduct {
 
     @Data
     @Builder
-    public static class Response{
+    public static class Response {
         private String productName;
         private String sellerName;
     }

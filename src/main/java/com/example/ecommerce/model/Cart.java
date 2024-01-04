@@ -8,11 +8,11 @@ import lombok.Data;
 
 public class Cart {
     @Data
-    public static class Request{
+    public static class Request {
         private String productName;
         private Long amount;
 
-        public CartEntity toEntity(MemberEntity memberEntity, ProductEntity productEntity){
+        public CartEntity toEntity(MemberEntity memberEntity, ProductEntity productEntity) {
             return CartEntity.builder()
                     .unitPrice(productEntity.getPrice())
                     .amount(this.amount)
@@ -25,14 +25,14 @@ public class Cart {
 
     @Data
     @Builder
-    public static class Response{
+    public static class Response {
         private Long productId;
         private String productName;
         private Long amount;
         private Long unitPrice;
         private Long totalPrice;
 
-        public static Response fromEntity(CartEntity cartEntity){
+        public static Response fromEntity(CartEntity cartEntity) {
             return Response.builder()
                     .productId(cartEntity.getCartId())
                     .productName(cartEntity.getProductEntity().getProductName())

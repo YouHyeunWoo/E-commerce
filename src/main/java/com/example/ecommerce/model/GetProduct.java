@@ -10,7 +10,7 @@ public class GetProduct {
 
     @Data
     @AllArgsConstructor
-    public static class Seller{
+    public static class Seller {
         private Long productId;
         private Long price;
         private Long amount;
@@ -19,11 +19,13 @@ public class GetProduct {
 
     @Data
     @AllArgsConstructor
-    public static class Client{
+    public static class Client {
         private Long productId;
         private Long price;
         private Long amount;
         private String explanation;
+        private String sellerName;
+        private String sellerPhone;
         private LocalDateTime registerDate;
         private LocalDateTime modifiedDate;
     }

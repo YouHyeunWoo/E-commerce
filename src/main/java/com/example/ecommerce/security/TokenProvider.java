@@ -73,7 +73,7 @@ public class TokenProvider {
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(this.secretKey)
-                .parseClaimsJws(token).getBody(); 
+                .parseClaimsJws(token).getBody();
         //jwt토큰은 header.body.signature로 이루어져있다. 그 중 body부분을 가져옴
     }
 }

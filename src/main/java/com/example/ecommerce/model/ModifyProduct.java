@@ -27,7 +27,7 @@ public class ModifyProduct {
         private LocalDateTime registerDate;
         private LocalDateTime modifiedDate;
 
-        public static Response fromEntity(ProductEntity productEntity){
+        public static Response fromEntity(ProductEntity productEntity) {
             return Response.builder()
                     .productId(productEntity.getProductId())
                     .productName(productEntity.getProductName())

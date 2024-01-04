@@ -8,7 +8,7 @@ public class JwtToken {
     @Value("{spring.jwt.secret}")
     private static String secretKey;
 
-    public static String getUserName(String totalToken){
+    public static String getUserName(String totalToken) {
         String token = totalToken.substring(TOKEN_PREFIX.length());
 
         return Jwts.parser().setSigningKey(secretKey)

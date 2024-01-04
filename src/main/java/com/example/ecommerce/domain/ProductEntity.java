@@ -1,7 +1,10 @@
 package com.example.ecommerce.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -29,9 +32,9 @@ public class ProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity member;
+    private MemberEntity memberEntity;
 
-    public void updateProduct(Long price, Long amount, String explanation){
+    public void updateProduct(Long price, Long amount, String explanation) {
         this.amount = amount;
         this.price = price;
         this.explanation = explanation;

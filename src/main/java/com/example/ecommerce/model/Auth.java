@@ -15,7 +15,7 @@ public class Auth {
     //회원가입에 사용할 클래스
     @Data
     @Builder
-    public static class Register{
+    public static class Register {
         @NotBlank
         private String name;
         @NotEmpty
@@ -27,7 +27,7 @@ public class Auth {
         @NotNull
         private List<String> roles;
 
-        public MemberEntity toEntity(){
+        public MemberEntity toEntity() {
             return MemberEntity.builder()
                     .name(this.name)
                     .password(this.password)
@@ -41,14 +41,14 @@ public class Auth {
 
     //로그인에 사용할 클래스
     @Data
-    public static class LogIn{
+    public static class LogIn {
         private String name;
         private String password;
     }
 
     //회원 탈퇴에 사용할 클래스
     @Data
-    public static class Withdrawal{
+    public static class Withdrawal {
         private String name;
         private String password;
     }
