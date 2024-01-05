@@ -33,7 +33,7 @@ public class ProductService {
     public ProductEntity registerProduct(String totalToken, RegisterProduct.Registration product) {
         String userName = jwtToken.getUserName(totalToken);
 
-        MemberEntity memberEntity = getMemberEntity(userName);
+        MemberEntity memberEntity = this.getMemberEntity(userName);
 
         boolean exists = this.productRepository.existsByProductNameAndMemberEntity(
                 product.getProductName(), memberEntity);
@@ -50,7 +50,7 @@ public class ProductService {
     public List<GetProduct.Seller> searchProduct(String totalToken) {
         String userName = jwtToken.getUserName(totalToken);
 
-        MemberEntity memberEntity = getMemberEntity(userName);
+        MemberEntity memberEntity = this.getMemberEntity(userName);
 
         List<ProductEntity> productEntityList =
                 this.productRepository.findAllByMemberEntity(memberEntity);
@@ -108,7 +108,7 @@ public class ProductService {
     public DeleteProduct.Response deleteProduct(String totalToken, DeleteProduct.Request removeProduct) {
         String userName = jwtToken.getUserName(totalToken);
 
-        MemberEntity memberEntity = getMemberEntity(userName);
+        MemberEntity memberEntity = this.getMemberEntity(userName);
 
         boolean existsProduct = this.productRepository
                 .existsByProductNameAndMemberEntity(

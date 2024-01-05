@@ -6,7 +6,7 @@ import com.example.ecommerce.domain.ProductEntity;
 import lombok.Builder;
 import lombok.Data;
 
-public class Cart {
+public class SaveCart {
     @Data
     public static class Request {
         private Long amount;
@@ -25,6 +25,7 @@ public class Cart {
     @Data
     @Builder
     public static class Response {
+        private Long cartId;
         private Long productId;
         private String productName;
         private Long amount;
@@ -33,6 +34,7 @@ public class Cart {
 
         public static Response fromEntity(CartEntity cartEntity) {
             return Response.builder()
+                    .cartId(cartEntity.getCartId())
                     .productId(cartEntity.getProductEntity().getProductId())
                     .productName(cartEntity.getProductEntity().getProductName())
                     .amount(cartEntity.getAmount())
