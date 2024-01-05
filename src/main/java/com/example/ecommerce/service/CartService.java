@@ -56,7 +56,7 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteCart(Long productId, String totalToken){
+    public ProductEntity deleteCart(Long productId, String totalToken) {
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));
 
@@ -65,9 +65,9 @@ public class CartService {
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
 
+        this.cartRepository.deleteByProductEntityAndMemberEntity(productEntity, memberEntity);
 
-
-
+        return productEntity;
     }
 
 }

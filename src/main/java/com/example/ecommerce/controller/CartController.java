@@ -1,11 +1,11 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.model.DeleteCartResponse;
 import com.example.ecommerce.model.SaveCart;
 import com.example.ecommerce.model.SearchCart;
 import com.example.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +37,8 @@ public class CartController {
 
     @DeleteMapping("/cart")
     @PreAuthorize("hasRole(CLIENT)")
-    public ResponseEntity<?> deleteCart(@RequestParam Long productId,
-                                        @RequestHeader(value = "Authorization") String totalToken) {
-        this.cartService.deleteCart(productId, totalToken);
-
-        return null;
+    public DeleteCartResponse deleteCart(@RequestParam Long productId,
+                                         @RequestHeader(value = "Authorization") String totalToken) {
+        return DeleteCartResponse.fromEntity(this.cartService.deleteCart(productId, totalToken));
     }
 }
