@@ -13,6 +13,8 @@ import java.util.List;
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
     List<CartEntity> findAllByMemberEntity(MemberEntity memberEntity);
 
+    boolean existsByProductEntity(ProductEntity productEntity);
+
     @Transactional
     void deleteByProductEntityAndMemberEntity(ProductEntity productEntity, MemberEntity memberEntity);
 }

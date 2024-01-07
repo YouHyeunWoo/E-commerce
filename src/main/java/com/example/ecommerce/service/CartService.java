@@ -28,9 +28,14 @@ public class CartService {
 
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));
+        boolean exists = this.cartRepository.existsByProductEntity(productEntity);
+
+        if (exists) {
+            throw new RuntimeException("장바구니에 같은 상품이 담겨 있습니다.");
+        }
+
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
-
 
         if (product.getAmount() > productEntity.getAmount()) {
             throw new RuntimeException("재고가 부족합니다.");
