@@ -3,6 +3,7 @@ package com.example.ecommerce.service;
 import com.example.ecommerce.domain.CartEntity;
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
+import com.example.ecommerce.exception.impl.*;
 import com.example.ecommerce.model.SaveCart;
 import com.example.ecommerce.model.SearchCart;
 import com.example.ecommerce.repository.CartRepository;
@@ -29,18 +30,19 @@ public class CartService {
         String userName = jwtToken.getUserName(totalToken);
 
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));
+                .orElseThrow(NotExistsProduct::new);
+
         boolean exists = this.cartRepository.existsByProductEntity(productEntity);
 
         if (exists) {
-            throw new RuntimeException("장바구니에 같은 상품이 담겨 있습니다.");
+            throw new ExistsSameProductInCart();
         }
 
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
+                .orElseThrow(NotExistsAccount::new);
 
         if (product.getAmount() > productEntity.getAmount()) {
-            throw new RuntimeException("재고가 부족합니다.");
+            throw new OutOfStock();
         }
 
         return this.cartRepository.save(product.toEntity(memberEntity, productEntity));
@@ -50,12 +52,12 @@ public class CartService {
     public List<SearchCart.Product> searchCart(String totalToken) {
         String userName = jwtToken.getUserName(totalToken);
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
+                .orElseThrow(NotExistsAccount::new);
         List<CartEntity> cartEntityList =
                 this.cartRepository.findAllByMemberEntity(memberEntity);
 
         if (cartEntityList.isEmpty()) {
-            throw new RuntimeException("장바구니에 담긴 상품이 없습니다.");
+            throw new DoNotHaveAnyProductInShoppingCart();
         }
 
         return cartEntityList.stream().map(e -> new SearchCart.Product(e.getProductEntity().getProductId(),
@@ -67,12 +69,12 @@ public class CartService {
     //장바구니 상품 삭제
     public ProductEntity deleteCart(Long productId, String totalToken) {
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));
+                .orElseThrow(NotExistsProduct::new);
 
         String userName = jwtToken.getUserName(totalToken);
 
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 계정 입니다."));
+                .orElseThrow(NotExistsAccount::new);
 
         this.cartRepository.deleteByProductEntityAndMemberEntity(productEntity, memberEntity);
 

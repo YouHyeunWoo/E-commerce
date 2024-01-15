@@ -1,6 +1,10 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
+import com.example.ecommerce.exception.impl.AlreadyExistsAccount;
+import com.example.ecommerce.exception.impl.AlreadyExistsPhoneNumber;
+import com.example.ecommerce.exception.impl.NotExistsAccount;
+import com.example.ecommerce.exception.impl.NotMatchPassword;
 import com.example.ecommerce.model.Auth;
 import com.example.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +25,17 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.memberRepository.findByName(username)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다"));
+                .orElseThrow(NotExistsAccount::new);
     }
 
     public MemberEntity register(Auth.Register register) {
         boolean existsName = this.memberRepository.existsByName(register.getName());
         boolean existsPhoneNumber = this.memberRepository.existsByPhone(register.getPhone());
         if (existsName) {
-            throw new RuntimeException("존재하는 아이디 입니다");
+            throw new AlreadyExistsAccount();
         }
         if (existsPhoneNumber) {
-            throw new RuntimeException("존재하는 핸드폰번호 입니다");
+            throw new AlreadyExistsPhoneNumber();
         }
         register.setPassword(passwordEncoder.encode(register.getPassword()));
         return this.memberRepository.save(register.toEntity());
@@ -58,13 +62,13 @@ public class MemberService implements UserDetailsService {
 
     private MemberEntity getMemberEntity(String member) {
         MemberEntity memberEntity = this.memberRepository.findByName(member)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다"));
+                .orElseThrow(NotExistsAccount::new);
         return memberEntity;
     }
 
     private void matchPassword(String password, MemberEntity memberEntity) {
         if (!passwordEncoder.matches(password, memberEntity.getPassword())) {
-            throw new RuntimeException("잘못된 비밀번호 입니다");
+            throw new NotMatchPassword();
         }
     }
 }

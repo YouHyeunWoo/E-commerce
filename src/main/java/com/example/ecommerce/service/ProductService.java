@@ -2,6 +2,10 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
+import com.example.ecommerce.exception.impl.AlreadyExistsSameProduct;
+import com.example.ecommerce.exception.impl.NoMatchProductAndProductSeller;
+import com.example.ecommerce.exception.impl.NotExistsAccount;
+import com.example.ecommerce.exception.impl.NotExistsProduct;
 import com.example.ecommerce.model.DeleteProduct;
 import com.example.ecommerce.model.GetProduct;
 import com.example.ecommerce.model.ModifyProduct;
@@ -39,7 +43,7 @@ public class ProductService {
                 product.getProductName(), memberEntity);
 
         if (exists) {
-            throw new RuntimeException("동일한 이름의 상품이 이미 등록되어 있습니다.");
+            throw new AlreadyExistsSameProduct();
         }
 
         return productRepository.save(product.toEntity(memberEntity));
@@ -56,7 +60,7 @@ public class ProductService {
                 this.productRepository.findAllByMemberEntity(memberEntity);
 
         if (productEntityList.isEmpty()) {
-            throw new RuntimeException("등록된 상품이 없습니다");
+            throw new NotExistsProduct();
         }
 
         return productEntityList.stream().map(e -> new GetProduct.Seller(e.getProductId(),
@@ -72,7 +76,7 @@ public class ProductService {
                 this.productRepository.findAllByProductName(productName, pageable);
 
         if (productEntityList.isEmpty()) {
-            throw new RuntimeException("등록된 상품이 없습니다");
+            throw new NotExistsProduct();
         }
 
         return productEntityList.stream().map(e -> new GetProduct.Client(e.getProductId(),
@@ -95,7 +99,7 @@ public class ProductService {
 
         ProductEntity productEntity = this.productRepository
                 .findByProductNameAndMemberEntity(request.getProductName(), memberEntity)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다"));
+                .orElseThrow(NotExistsProduct::new);
 
         productEntity.updateProduct(request.getPrice(), request.getAmount(), request.getExplanation());
 
@@ -115,7 +119,7 @@ public class ProductService {
                         removeProduct.getProductName(), memberEntity);
 
         if (!existsProduct) {
-            throw new RuntimeException("해당 판매자가 판매하는 상품이 아닙니다");
+            throw new NoMatchProductAndProductSeller();
         }
 
         this.productRepository.deleteByProductNameAndMemberEntity(
@@ -129,6 +133,6 @@ public class ProductService {
 
     private MemberEntity getMemberEntity(String userName) {
         return this.memberRepository.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다."));
+                .orElseThrow(NotExistsAccount::new);
     }
 }
