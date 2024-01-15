@@ -23,6 +23,8 @@ public class CartService {
     private final ProductRepository productRepository;
     private final JwtToken jwtToken;
 
+    //장바구니에 상품 담기
+    //재고가 부족하면 담기 실패
     public CartEntity putIn(Long productId, String totalToken, SaveCart.Request product) {
         String userName = jwtToken.getUserName(totalToken);
 
@@ -44,6 +46,7 @@ public class CartService {
         return this.cartRepository.save(product.toEntity(memberEntity, productEntity));
     }
 
+    //내 장바구니 검색
     public List<SearchCart.Product> searchCart(String totalToken) {
         String userName = jwtToken.getUserName(totalToken);
         MemberEntity memberEntity = this.memberRepository.findByName(userName)
@@ -61,6 +64,7 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
+    //장바구니 상품 삭제
     public ProductEntity deleteCart(Long productId, String totalToken) {
         ProductEntity productEntity = this.productRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다."));

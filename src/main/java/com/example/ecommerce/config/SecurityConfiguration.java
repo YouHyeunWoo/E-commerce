@@ -20,11 +20,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable) //scrf 비활성화
                 .sessionManagement(SessionManagement -> SessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/auth/**", "/product/**", "/cart/**").permitAll()
+                        .requestMatchers("/auth/**", "/product/{productName}").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
