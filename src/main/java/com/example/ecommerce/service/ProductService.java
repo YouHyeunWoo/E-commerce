@@ -79,12 +79,12 @@ public class ProductService {
             throw new NotExistsProduct();
         }
 
-        return productEntityList.stream().map(e -> new GetProduct.Client(e.getProductId(),
-                        e.getPrice(), e.getAmount(), e.getExplanation(),
-                        e.getMemberEntity().getName(),
-                        e.getMemberEntity().getPhone(),
-                        e.getRegisterDate(),
-                        e.getModifiedDate()))
+        return productEntityList.stream().map(product -> new GetProduct.Client(product.getProductId(),
+                        product.getPrice(), product.getAmount(), product.getExplanation(),
+                        product.getMemberEntity().getName(),
+                        product.getMemberEntity().getPhone(),
+                        product.getRegisterDate(),
+                        product.getModifiedDate()))
                 .collect(Collectors.toList());
     }
 

@@ -2,7 +2,7 @@ package com.example.ecommerce.model;
 
 import com.example.ecommerce.domain.MemberEntity;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,11 +19,12 @@ public class Auth {
         private String name;
         @NotBlank
         private String password;
-        @NotBlank
+        @NotBlank(message = "전화번호를 입력해 주세요")
+        @Size(max = 11, min = 11, message = "전화번호 11자리를 입력해 주세요.")
         private String phone;
         @NotBlank
         private String address;
-        @NotNull
+        @NotBlank
         private List<String> roles;
 
         public MemberEntity toEntity() {

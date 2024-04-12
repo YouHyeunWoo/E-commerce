@@ -60,9 +60,9 @@ public class CartService {
             throw new DoNotHaveAnyProductInShoppingCart();
         }
 
-        return cartEntityList.stream().map(e -> new SearchCart.Product(e.getProductEntity().getProductId(),
-                        e.getProductEntity().getProductName(), e.getAmount(),
-                        e.getUnitPrice(), e.getTotalPrice()))
+        return cartEntityList.stream().map(product -> new SearchCart.Product(product.getProductEntity().getProductId(),
+                        product.getProductEntity().getProductName(), product.getAmount(),
+                        product.getUnitPrice(), product.getTotalPrice()))
                 .collect(Collectors.toList());
     }
 

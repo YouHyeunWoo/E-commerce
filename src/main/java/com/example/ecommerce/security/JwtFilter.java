@@ -26,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //request로부터 token을 꺼내온다
         String token = resolveTokenFromRequest(request);
-        if (StringUtils.hasText(token) && this.tokenProvider.valiateToken(token)) {
+        if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
             Authentication authentication = this.tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

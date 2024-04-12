@@ -61,9 +61,8 @@ public class MemberService implements UserDetailsService {
     }
 
     private MemberEntity getMemberEntity(String member) {
-        MemberEntity memberEntity = this.memberRepository.findByName(member)
+        return this.memberRepository.findByName(member)
                 .orElseThrow(NotExistsAccount::new);
-        return memberEntity;
     }
 
     private void matchPassword(String password, MemberEntity memberEntity) {

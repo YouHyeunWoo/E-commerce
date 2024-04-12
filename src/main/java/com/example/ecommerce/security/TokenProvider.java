@@ -58,7 +58,7 @@ public class TokenProvider {
     }
 
     //토큰의 유효성검사
-    public boolean valiateToken(String token) {
+    public boolean validateToken(String token) {
         //토큰이 비어있지 않은지 확인
         if (!StringUtils.hasText(token)) {
             return false;
@@ -75,5 +75,4 @@ public class TokenProvider {
                 .parseClaimsJws(token).getBody();
         //jwt토큰은 header.body.signature로 이루어져있다. 그 중 body부분을 가져옴
     }
-
 }
