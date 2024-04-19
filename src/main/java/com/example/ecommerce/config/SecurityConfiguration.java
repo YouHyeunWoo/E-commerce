@@ -22,6 +22,7 @@ public class SecurityConfiguration {
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable) //scrf 비활성화
+                .formLogin(AbstractHttpConfigurer::disable) //form로그인 방식 비활성화
                 .sessionManagement(SessionManagement -> SessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
