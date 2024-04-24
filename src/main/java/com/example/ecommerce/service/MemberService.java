@@ -6,6 +6,7 @@ import com.example.ecommerce.exception.impl.AlreadyExistsPhoneNumber;
 import com.example.ecommerce.exception.impl.NotExistsAccount;
 import com.example.ecommerce.exception.impl.NotMatchPassword;
 import com.example.ecommerce.model.Auth;
+import com.example.ecommerce.model.LogIn;
 import com.example.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,7 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(NotExistsAccount::new);
     }
 
-    public MemberEntity register(Auth.Register register) {
+    public Auth.RegisterResponse register(Auth.Register register) {
         boolean existsName = this.memberRepository.existsByName(register.getName());
         boolean existsPhoneNumber = this.memberRepository.existsByPhone(register.getPhone());
         if (existsName) {
@@ -38,15 +39,16 @@ public class MemberService implements UserDetailsService {
             throw new AlreadyExistsPhoneNumber();
         }
         register.setPassword(passwordEncoder.encode(register.getPassword()));
-        return this.memberRepository.save(register.toEntity());
+        return Auth.RegisterResponse.fromEntity(
+                this.memberRepository.save(register.toEntity()));
     }
 
     //로그인 메소드
     //입력받은 아이디 비밀번호로 계정이 존재하는지, 비밀번호가 일치하는지 확인
-    public MemberEntity logIn(Auth.LogIn member) {
+    public LogIn.Response logIn(LogIn.Request member) {
         MemberEntity memberEntity = getMemberEntity(member.getName());
         matchPassword(member.getPassword(), memberEntity);
-        return memberEntity;
+        return LogIn.Response.fromEntity(memberEntity);
     }
 
     //회원 탈퇴 메소드
