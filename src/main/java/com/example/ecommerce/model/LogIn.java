@@ -22,14 +22,15 @@ public class LogIn {
     @Builder
     public static class Response{
         private String name;
+        private Long userId;
         private List<String> roles;
 
         public static Response fromEntity(MemberEntity memberEntity){
             return Response.builder()
                     .name(memberEntity.getName())
                     .roles(memberEntity.getRole())
+                    .userId(memberEntity.getId())
                     .build();
         }
     }
-
 }

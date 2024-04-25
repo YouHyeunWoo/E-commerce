@@ -1,5 +1,6 @@
 package com.example.ecommerce.security;
 
+import com.example.ecommerce.model.Token;
 import com.example.ecommerce.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,14 +19,15 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class TokenProvider {
-    private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 3;
     private static final String KEY_ROLES = "roles";
     private final MemberService memberService;
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String name, List<String> roles) {
+    public Token generateToken(String name, List<String> roles) {
         //jwt는 원하는 정보를 담기 위해 Claim이라는 공간을 제공해 준다.
         //Claim은 일종의 Map자료구조처럼 키, 밸류 쌍으로 정보를 넣을 수 있다
         Claims claims = Jwts.claims().setSubject(name);
@@ -33,14 +35,25 @@ public class TokenProvider {
 
         //현재시간과 만료시간 설정 >> 만료시간은 현재시간에서 한시간 후
         var now = new Date();
-        var expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 생성 시간
-                .setExpiration(expireDate) //토큰 만료 시간
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME)) //토큰 만료 시간
                 .signWith(SignatureAlgorithm.HS512, this.secretKey) //토큰생성 알고리즘, 비밀키
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(SignatureAlgorithm.HS256, this.secretKey)
+                .compact();
+
+        return Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     //토큰의 subject(사용자 이름) 가져오기
