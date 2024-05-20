@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.model.auth;
 
 import com.example.ecommerce.domain.MemberEntity;
 import jakarta.validation.constraints.NotBlank;

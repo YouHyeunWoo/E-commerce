@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.model.auth;
 
 import lombok.Builder;
 import lombok.Getter;

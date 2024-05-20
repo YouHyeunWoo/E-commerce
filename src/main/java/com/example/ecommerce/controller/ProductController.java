@@ -1,6 +1,10 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.*;
+import com.example.ecommerce.model.cart.SearchProductResponse;
+import com.example.ecommerce.model.product.DeleteProduct;
+import com.example.ecommerce.model.product.GetProduct;
+import com.example.ecommerce.model.product.ModifyProduct;
+import com.example.ecommerce.model.product.RegisterProduct;
 import com.example.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

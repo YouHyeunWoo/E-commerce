@@ -6,7 +6,7 @@ import com.example.ecommerce.domain.OrderEntity;
 import com.example.ecommerce.exception.impl.DoNotHaveAnyProductInShoppingCart;
 import com.example.ecommerce.exception.impl.DoNotHaveEnoughBalance;
 import com.example.ecommerce.exception.impl.NotExistsAccount;
-import com.example.ecommerce.model.Order;
+import com.example.ecommerce.model.order.Order;
 import com.example.ecommerce.repository.CartRepository;
 import com.example.ecommerce.repository.MemberRepository;
 import com.example.ecommerce.repository.OrderRepository;

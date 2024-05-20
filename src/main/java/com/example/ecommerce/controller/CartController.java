@@ -1,8 +1,8 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.DeleteCartResponse;
-import com.example.ecommerce.model.SaveCart;
-import com.example.ecommerce.model.SearchCart;
+import com.example.ecommerce.model.cart.DeleteCartResponse;
+import com.example.ecommerce.model.cart.SaveCart;
+import com.example.ecommerce.model.cart.SearchCart;
 import com.example.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

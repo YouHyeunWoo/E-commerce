@@ -26,8 +26,10 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //request로부터 token을 꺼내온다
         String token = resolveTokenFromRequest(request);
+        //토큰이 만료된 토큰인지 아닌지 검증
         if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
             Authentication authentication = this.tokenProvider.getAuthentication(token);
+            //ContextHolder의 Context에 사용자의 UserDetails를 담아 한번의 요청에 대한 임시 세션을 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
@@ -38,6 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
     //jwt토큰은 Authorization : Bearer (token) 으로 전달됨
     private String resolveTokenFromRequest(HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
+        //토큰이 비어있지는 않는지 검증
         if (!ObjectUtils.isEmpty(token) && token.startsWith(TOKEN_PREFIX)) {
             return token.substring(TOKEN_PREFIX.length());
         }

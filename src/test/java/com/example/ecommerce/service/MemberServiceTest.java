@@ -2,8 +2,8 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.exception.impl.NotMatchPassword;
-import com.example.ecommerce.model.Auth;
-import com.example.ecommerce.model.LogIn;
+import com.example.ecommerce.model.auth.Auth;
+import com.example.ecommerce.model.auth.LogIn;
 import com.example.ecommerce.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -13,7 +13,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 @Configuration
-public class CacheConfig {
+public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -38,8 +38,8 @@ public class CacheConfig {
     public RedisTemplate<String, Long> cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); //key(refresh토큰) 직렬화
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer()); //value(사용자id) 직렬화
 
         return redisTemplate;
     }

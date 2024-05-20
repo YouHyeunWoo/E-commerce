@@ -1,10 +1,7 @@
 package com.example.ecommerce.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +21,12 @@ public class MemberEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    private String socialName;
     private String password;
     private String phone;
     private String address;
+    @Setter
+    private String email;
     private LocalDateTime registerDate;
 
     @ElementCollection

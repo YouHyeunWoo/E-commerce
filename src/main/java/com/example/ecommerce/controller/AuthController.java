@@ -1,9 +1,9 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.Auth;
-import com.example.ecommerce.model.LogIn;
-import com.example.ecommerce.model.RefreshToken;
-import com.example.ecommerce.model.Token;
+import com.example.ecommerce.model.auth.Auth;
+import com.example.ecommerce.model.auth.LogIn;
+import com.example.ecommerce.model.auth.RefreshToken;
+import com.example.ecommerce.model.auth.Token;
 import com.example.ecommerce.repository.RefreshTokenRepository;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.MemberService;

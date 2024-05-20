@@ -1,6 +1,6 @@
 package com.example.ecommerce.security;
 
-import com.example.ecommerce.model.Token;
+import com.example.ecommerce.model.auth.Token;
 import com.example.ecommerce.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

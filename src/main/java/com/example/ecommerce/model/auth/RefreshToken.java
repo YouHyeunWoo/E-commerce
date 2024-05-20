@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.model.auth;
 
 import jakarta.persistence.Id;
 import lombok.Getter;

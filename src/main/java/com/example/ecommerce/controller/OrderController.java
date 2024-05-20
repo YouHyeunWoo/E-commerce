@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.domain.CartEntity;
-import com.example.ecommerce.model.Order;
+import com.example.ecommerce.model.order.Order;
 import com.example.ecommerce.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

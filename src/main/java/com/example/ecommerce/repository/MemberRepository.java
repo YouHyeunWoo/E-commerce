@@ -13,6 +13,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query("Select m from member m left join fetch m.role where m.name = :name")
     Optional<MemberEntity> findByName(String name);
 
+    MemberEntity findBySocialName(String socialName);
+
     boolean existsByName(String name);
 
     boolean existsByPhone(String phoneNumber);
