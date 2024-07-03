@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class DoNotHaveAnyProductInShoppingCart extends AbstractException {
+public class AlreadyExistsSameProductException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class DoNotHaveAnyProductInShoppingCart extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "장바구니에 상품이 없습니다.";
+        return "동일한 이름의 상품이 이미 등록되어 있습니다.";
     }
 }

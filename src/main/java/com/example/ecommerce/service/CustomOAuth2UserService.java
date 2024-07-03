@@ -1,7 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
-import com.example.ecommerce.exception.impl.BadRequestForSocialLogin;
+import com.example.ecommerce.exception.impl.BadRequestForSocialLoginException;
 import com.example.ecommerce.model.auth.*;
 import com.example.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         } else {
-            throw new BadRequestForSocialLogin();
+            throw new BadRequestForSocialLoginException();
         }
 
         //로그인 관련 로직

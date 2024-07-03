@@ -27,7 +27,7 @@ public class AuthController {
         return this.memberService.register(request);
     }
 
-    @RequestMapping("/auth")
+    @PostMapping("/auth")
     public Token logIn(@RequestBody LogIn.Request request) {
         LogIn.Response logIn = this.memberService.logIn(request);
         Token token = this.tokenProvider.generateToken(logIn.getName(), logIn.getRoles());
@@ -38,8 +38,8 @@ public class AuthController {
     }
 
     @GetMapping("/auth/token")
-    public Token getNewToken(@RequestHeader(value = "Authorization") String oldToken){
-        LogIn.Response logIn = this.memberService.getNewToken(oldToken);
+    public Token getNewToken(@RequestHeader(value = "Authorization") String refreshToken){
+        LogIn.Response logIn = this.memberService.getNewToken(refreshToken);
 
         Token newToken = this.tokenProvider.generateToken(logIn.getName(), logIn.getRoles());
         this.refreshTokenRepository.save(

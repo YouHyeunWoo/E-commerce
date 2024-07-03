@@ -1,5 +1,6 @@
 package com.example.ecommerce.domain;
 
+import com.example.ecommerce.exception.impl.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ public class ProductEntity {
 
     private String explanation;
 
-    private Long amount;
+    private Long stock;
 
     private LocalDateTime registerDate;
 
@@ -35,9 +36,17 @@ public class ProductEntity {
     private MemberEntity memberEntity;
 
     public void updateProduct(Long price, Long amount, String explanation) {
-        this.amount = amount;
+        this.stock = amount;
         this.price = price;
         this.explanation = explanation;
         this.modifiedDate = LocalDateTime.now();
+    }
+
+    public void decreaseStock(Long quantity){
+        if(this.stock >= quantity){
+            this.stock -= quantity;
+        }else{
+            throw new OutOfStockException();
+        }
     }
 }

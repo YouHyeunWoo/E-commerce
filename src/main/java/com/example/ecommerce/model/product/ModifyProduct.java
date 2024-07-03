@@ -12,7 +12,7 @@ public class ModifyProduct {
     public static class Request {
         private String productName;
         private Long price;
-        private Long amount;
+        private Long stock;
         private String explanation;
     }
 
@@ -22,7 +22,7 @@ public class ModifyProduct {
         private Long productId;
         private String productName;
         private Long price;
-        private Long amount;
+        private Long stock;
         private String explanation;
         private LocalDateTime registerDate;
         private LocalDateTime modifiedDate;
@@ -32,7 +32,7 @@ public class ModifyProduct {
                     .productId(productEntity.getProductId())
                     .productName(productEntity.getProductName())
                     .price(productEntity.getPrice())
-                    .amount(productEntity.getAmount())
+                    .stock(productEntity.getStock())
                     .explanation(productEntity.getExplanation())
                     .registerDate(productEntity.getRegisterDate())
                     .modifiedDate(productEntity.getModifiedDate())

@@ -3,7 +3,8 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class NotMatchPassword extends AbstractException {
+public class DoNotHaveAnyProductInShoppingCartException extends AbstractException {
+
     @Override
     public int getStatusCode() {
         return HttpStatus.BAD_REQUEST.value();
@@ -11,6 +12,6 @@ public class NotMatchPassword extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "비밀번호가 일치하지 않습니다";
+        return "장바구니에 상품이 없습니다.";
     }
 }

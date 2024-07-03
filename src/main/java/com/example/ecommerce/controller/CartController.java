@@ -1,15 +1,13 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.cart.DeleteCartResponse;
-import com.example.ecommerce.model.cart.SaveCart;
-import com.example.ecommerce.model.cart.SearchCart;
+import com.example.ecommerce.model.cart.CreateCartResponse;
 import com.example.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -17,28 +15,17 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
 
+    //장바구니 생성
     @PostMapping("/cart")
-    @PreAuthorize("hasRole(CLIENT)")
-    public SaveCart.Response putInCart(@RequestParam Long productId,
-                                       @RequestHeader(value = "Authorization") String totalToken,
-                                       @RequestBody SaveCart.Request request) {
-        return SaveCart.Response.fromEntity(this.cartService.putIn(productId, totalToken, request));
+    @PreAuthorize("hasAnyAuthority('SELLER', 'CLIENT')")
+    public CreateCartResponse createCart() {
+        return this.cartService.createCartForUser();
     }
 
-    @GetMapping("/cart")
-    @PreAuthorize("hasRole(CLIENT)")
-    public SearchCart.ProductList searchCart(@RequestHeader(value = "Authorization") String totalToken) {
-        List<SearchCart.Product> productList = this.cartService.searchCart(totalToken);
-        //상품들의 최총 금액을 모두 합하여 결제 해야 하는 총액을 저장
-        Long totalPrice = productList.stream().mapToLong(SearchCart.Product::getTotalPrice).sum();
-
-        return new SearchCart.ProductList(totalPrice, productList);
-    }
-
-    @DeleteMapping("/cart")
-    @PreAuthorize("hasRole(CLIENT)")
-    public DeleteCartResponse deleteCart(@RequestParam Long productId,
-                                         @RequestHeader(value = "Authorization") String totalToken) {
-        return DeleteCartResponse.fromEntity(this.cartService.deleteCart(productId, totalToken));
+    //장바구니 비우기
+    @DeleteMapping("/cart/all-item")
+    @PreAuthorize("hasAnyAuthority('SELLER', 'CLIENT')")
+    public void removeAllCartItem() {
+        this.cartService.removeAllCartItem();
     }
 }

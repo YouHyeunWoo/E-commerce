@@ -2,10 +2,9 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
-import com.example.ecommerce.exception.impl.AlreadyExistsSameProduct;
-import com.example.ecommerce.exception.impl.NoMatchProductAndProductSeller;
-import com.example.ecommerce.exception.impl.NotExistsAccount;
-import com.example.ecommerce.exception.impl.NotExistsProduct;
+import com.example.ecommerce.exception.impl.AlreadyExistsSameProductException;
+import com.example.ecommerce.exception.impl.NoMatchProductAndProductSellerException;
+import com.example.ecommerce.exception.impl.NotExistsProductException;
 import com.example.ecommerce.model.product.DeleteProduct;
 import com.example.ecommerce.model.product.GetProduct;
 import com.example.ecommerce.model.product.ModifyProduct;
@@ -28,43 +27,39 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
     private final JwtToken jwtToken;
 
     //상품 등록
     //판매자의 아이디가 존재하는지 확인 >> 존재하면 상품 등록 가능
     //판매자는 자신이 등록한 동일한 이름의 상품은 등록 불가
-    public ProductEntity registerProduct(String totalToken, RegisterProduct.Registration product) {
-        String userName = jwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.getMemberEntity(userName);
+    public RegisterProduct.Response registerProduct(RegisterProduct.Registration product) {
+        MemberEntity memberEntity = jwtToken.getMemberEntityFromAuthentication();
 
         boolean exists = this.productRepository.existsByProductNameAndMemberEntity(
                 product.getProductName(), memberEntity);
 
         if (exists) {
-            throw new AlreadyExistsSameProduct();
+            throw new AlreadyExistsSameProductException();
         }
 
-        return productRepository.save(product.toEntity(memberEntity));
+        return RegisterProduct.Response.fromProductEntity
+                (productRepository.save(product.toEntity(memberEntity)));
     }
 
     //상품 검색(판매자용)
     //판매자가 등록한 상품을 모두 검색하는 기능 >> 등록된 상품을 리스트로 만들어 반환
-    public List<GetProduct.Seller> searchProduct(String totalToken) {
-        String userName = jwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.getMemberEntity(userName);
+    public List<GetProduct.Seller> searchProduct() {
+        MemberEntity memberEntity = jwtToken.getMemberEntityFromAuthentication();
 
         List<ProductEntity> productEntityList =
                 this.productRepository.findAllByMemberEntity(memberEntity);
 
         if (productEntityList.isEmpty()) {
-            throw new NotExistsProduct();
+            throw new NotExistsProductException();
         }
 
         return productEntityList.stream().map(e -> new GetProduct.Seller(e.getProductId(),
-                        e.getPrice(), e.getAmount(), e.getExplanation()))
+                        e.getPrice(), e.getStock(), e.getExplanation()))
                 .collect(Collectors.toList());
     }
 
@@ -76,11 +71,11 @@ public class ProductService {
                 this.productRepository.findAllByProductName(productName, pageable);
 
         if (productEntityList.isEmpty()) {
-            throw new NotExistsProduct();
+            throw new NotExistsProductException();
         }
 
         return productEntityList.stream().map(product -> new GetProduct.Client(product.getProductId(),
-                        product.getPrice(), product.getAmount(), product.getExplanation(),
+                        product.getPrice(), product.getStock(), product.getExplanation(),
                         product.getMemberEntity().getName(),
                         product.getMemberEntity().getPhone(),
                         product.getRegisterDate(),
@@ -92,16 +87,14 @@ public class ProductService {
     //상품 상품의 이름과 그 상품을 등록한 판매자의 아이디가 일치하는지 확인
     //상품 update는 ProductEntity 내부에 updateProduct 메소드를 만들어 update진행
     @Transactional
-    public ProductEntity modifyProduct(String totalToken, ModifyProduct.Request request) {
-        String userName = jwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.getMemberEntity(userName);
+    public ProductEntity modifyProduct(ModifyProduct.Request request) {
+        MemberEntity memberEntity = jwtToken.getMemberEntityFromAuthentication();
 
         ProductEntity productEntity = this.productRepository
                 .findByProductNameAndMemberEntity(request.getProductName(), memberEntity)
-                .orElseThrow(NotExistsProduct::new);
+                .orElseThrow(NotExistsProductException::new);
 
-        productEntity.updateProduct(request.getPrice(), request.getAmount(), request.getExplanation());
+        productEntity.updateProduct(request.getPrice(), request.getStock(), request.getExplanation());
 
         return this.productRepository.save(productEntity);
     }
@@ -109,17 +102,14 @@ public class ProductService {
     //상품 삭제
     //판매자 아이디와 상품 이름으로 상품이 존재하는지 확인
     //존재하면 상품 삭제
-    public DeleteProduct.Response deleteProduct(String totalToken, DeleteProduct.Request removeProduct) {
-        String userName = jwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.getMemberEntity(userName);
-
+    public DeleteProduct.Response deleteProduct(DeleteProduct.Request removeProduct) {
+        MemberEntity memberEntity = jwtToken.getMemberEntityFromAuthentication();
         boolean existsProduct = this.productRepository
                 .existsByProductNameAndMemberEntity(
                         removeProduct.getProductName(), memberEntity);
 
         if (!existsProduct) {
-            throw new NoMatchProductAndProductSeller();
+            throw new NoMatchProductAndProductSellerException();
         }
 
         this.productRepository.deleteByProductNameAndMemberEntity(
@@ -127,12 +117,7 @@ public class ProductService {
 
         return DeleteProduct.Response.builder()
                 .productName(removeProduct.getProductName())
-                .sellerName(userName)
+                .sellerName(memberEntity.getName())
                 .build();
-    }
-
-    private MemberEntity getMemberEntity(String userName) {
-        return this.memberRepository.findByName(userName)
-                .orElseThrow(NotExistsAccount::new);
     }
 }

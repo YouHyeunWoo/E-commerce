@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class AlreadyExistsPhoneNumber extends AbstractException {
+public class DoNotHaveEnoughBalanceException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class AlreadyExistsPhoneNumber extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "이미 존재하는 핸드폰번호입니다.";
+        return "잔액이 부족합니다.";
     }
 }

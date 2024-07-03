@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Repository
 @RequiredArgsConstructor
 public class RefreshTokenRepository {
-    private static final long REFRESH_TOKEN_LIFE = 1000 * 60 * 60 * 3;
+    private static final long REFRESH_TOKEN_LIFE = 60 * 60 * 3;
 
     private final RedisTemplate<String, Long> redisTemplate;
 

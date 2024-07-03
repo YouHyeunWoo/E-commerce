@@ -16,16 +16,6 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
 
-    private Long unitPrice;
-
-    private Long amount;
-
-    private Long totalPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity productEntity;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;

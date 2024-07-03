@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class AlreadyExistsAccount extends AbstractException {
+public class OutOfStockException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class AlreadyExistsAccount extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "이미 존재하는 계정입니다.";
+        return "재고가 부족합니다.";
     }
 }

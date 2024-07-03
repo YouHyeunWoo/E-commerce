@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "order")
+import java.time.LocalDateTime;
+
+@Entity(name = "order_table")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,10 +20,18 @@ public class OrderEntity {
     private Long orderId;
 
     @OneToOne
-    @JoinColumn(name = "cartId")
+    @JoinColumn(name = "cart_id")
     private CartEntity cartEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private MemberEntity memberEntity;
+
+    private Long totalPrice;
+    private String orderAddress;
+    private LocalDateTime orderDate;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "paymentStatus")
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 }

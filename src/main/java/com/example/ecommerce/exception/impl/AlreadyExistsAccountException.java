@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class NotExistsProduct extends AbstractException {
+public class AlreadyExistsAccountException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class NotExistsProduct extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "존재하지 않는 상품입니다.";
+        return "이미 존재하는 계정입니다.";
     }
 }

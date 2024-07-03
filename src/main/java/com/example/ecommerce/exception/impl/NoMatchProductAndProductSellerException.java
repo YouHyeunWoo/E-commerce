@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class BadRequestForSocialLogin extends AbstractException {
+public class NoMatchProductAndProductSellerException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class BadRequestForSocialLogin extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "잘못된 소셜 로그인 요청입니다.";
+        return "해당 판매자가 판매하는 상품이 아닙니다.";
     }
 }

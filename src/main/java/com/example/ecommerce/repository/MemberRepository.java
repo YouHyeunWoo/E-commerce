@@ -15,9 +15,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     MemberEntity findBySocialName(String socialName);
 
-    boolean existsByName(String name);
-
-    boolean existsByPhone(String phoneNumber);
+    boolean existsByNameAndPhone(String name, String phone);
 
     @Transactional
     void deleteByName(String userName);

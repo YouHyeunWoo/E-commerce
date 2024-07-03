@@ -3,7 +3,8 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class ExistsSameProductInCart extends AbstractException {
+public class NotExistsProductInCartException extends AbstractException {
+
     @Override
     public int getStatusCode() {
         return HttpStatus.BAD_REQUEST.value();
@@ -11,6 +12,6 @@ public class ExistsSameProductInCart extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "장바구니에 같은 상품이 존재합니다.";
+        return "장바구니에 해당 상품이 존재하지 않습니다.";
     }
 }

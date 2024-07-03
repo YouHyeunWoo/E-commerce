@@ -1,10 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
-import com.example.ecommerce.exception.impl.AlreadyExistsAccount;
-import com.example.ecommerce.exception.impl.AlreadyExistsPhoneNumber;
-import com.example.ecommerce.exception.impl.NotExistsAccount;
-import com.example.ecommerce.exception.impl.NotMatchPassword;
+import com.example.ecommerce.exception.impl.*;
 import com.example.ecommerce.model.auth.Auth;
 import com.example.ecommerce.model.auth.LogIn;
 import com.example.ecommerce.model.auth.RefreshToken;
@@ -34,17 +31,14 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.memberRepository.findByName(username)
-                .orElseThrow(NotExistsAccount::new);
+                .orElseThrow(NotExistsAccountException::new);
     }
 
     public Auth.RegisterResponse register(Auth.Register register) {
-        boolean existsName = this.memberRepository.existsByName(register.getName());
-        boolean existsPhoneNumber = this.memberRepository.existsByPhone(register.getPhone());
-        if (existsName) {
-            throw new AlreadyExistsAccount();
-        }
-        if (existsPhoneNumber) {
-            throw new AlreadyExistsPhoneNumber();
+        boolean existsAccount = this.memberRepository
+                .existsByNameAndPhone(register.getName(), register.getPhone());
+        if (existsAccount) {
+            throw new AlreadyExistsAccountException();
         }
         register.setPassword(passwordEncoder.encode(register.getPassword()));
         return Auth.RegisterResponse.fromEntity(
@@ -68,10 +62,10 @@ public class MemberService implements UserDetailsService {
             token = refreshToken.substring(TOKEN_PREFIX.length()).trim();
         }
         RefreshToken tokenAndUserId = this.refreshTokenRepository.findById(token)
-                .orElseThrow(() -> new RuntimeException("Not Exists token"));
+                .orElseThrow(NotExistsTokenException::new);
 
         MemberEntity memberEntity = this.memberRepository.findById(tokenAndUserId.getUserId())
-                .orElseThrow(NotExistsAccount::new);
+                .orElseThrow(NotExistsAccountException::new);
 
         return LogIn.Response.fromEntity(memberEntity);
     }
@@ -89,12 +83,12 @@ public class MemberService implements UserDetailsService {
 
     private MemberEntity getMemberEntity(String member) {
         return this.memberRepository.findByName(member)
-                .orElseThrow(NotExistsAccount::new);
+                .orElseThrow(NotExistsAccountException::new);
     }
 
     private void matchPassword(String password, MemberEntity memberEntity) {
         if (!passwordEncoder.matches(password, memberEntity.getPassword())) {
-            throw new NotMatchPassword();
+            throw new NotMatchPasswordException();
         }
     }
 }

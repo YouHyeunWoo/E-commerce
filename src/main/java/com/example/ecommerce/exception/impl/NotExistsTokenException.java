@@ -3,7 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class NotExistsAccount extends AbstractException {
+public class NotExistsTokenException extends AbstractException {
 
     @Override
     public int getStatusCode() {
@@ -12,6 +12,6 @@ public class NotExistsAccount extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "존재하지 않는 계정입니다.";
+        return "존재하지 않는 토큰입니다.";
     }
 }

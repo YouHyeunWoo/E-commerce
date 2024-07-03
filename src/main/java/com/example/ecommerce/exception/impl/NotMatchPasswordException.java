@@ -3,8 +3,7 @@ package com.example.ecommerce.exception.impl;
 import com.example.ecommerce.exception.AbstractException;
 import org.springframework.http.HttpStatus;
 
-public class DoNotHaveEnoughBalance extends AbstractException {
-
+public class NotMatchPasswordException extends AbstractException {
     @Override
     public int getStatusCode() {
         return HttpStatus.BAD_REQUEST.value();
@@ -12,6 +11,6 @@ public class DoNotHaveEnoughBalance extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "잔액이 부족합니다.";
+        return "비밀번호가 일치하지 않습니다";
     }
 }

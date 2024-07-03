@@ -2,83 +2,44 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.CartEntity;
 import com.example.ecommerce.domain.MemberEntity;
-import com.example.ecommerce.domain.ProductEntity;
-import com.example.ecommerce.exception.impl.*;
-import com.example.ecommerce.model.cart.SaveCart;
-import com.example.ecommerce.model.cart.SearchCart;
+import com.example.ecommerce.exception.impl.AlreadyExistsCartException;
+import com.example.ecommerce.exception.impl.NotExistsTokenException;
+import com.example.ecommerce.model.cart.CreateCartResponse;
+import com.example.ecommerce.repository.CartItemRepository;
 import com.example.ecommerce.repository.CartRepository;
-import com.example.ecommerce.repository.MemberRepository;
-import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.security.JwtToken;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
+    private final CartItemRepository cartItemRepository;
     private final JwtToken jwtToken;
 
-    //장바구니에 상품 담기
-    //재고가 부족하면 담기 실패
-    public CartEntity putIn(Long productId, String totalToken, SaveCart.Request product) {
-        String userName = jwtToken.getUserName(totalToken);
+    //장바구니 생성
+    public CreateCartResponse createCartForUser() {
+        MemberEntity memberEntity = this.jwtToken.getMemberEntityFromAuthentication();
+        boolean existsCart = this.cartRepository.existsByMemberEntity(memberEntity);
 
-        ProductEntity productEntity = this.productRepository.findByProductId(productId)
-                .orElseThrow(NotExistsProduct::new);
-
-        boolean exists = this.cartRepository.existsByProductEntity(productEntity);
-
-        if (exists) {
-            throw new ExistsSameProductInCart();
+        if (existsCart) {
+            throw new AlreadyExistsCartException();
         }
 
-        MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(NotExistsAccount::new);
-
-        if (product.getAmount() > productEntity.getAmount()) {
-            throw new OutOfStock();
-        }
-
-        return this.cartRepository.save(product.toEntity(memberEntity, productEntity));
+        return CreateCartResponse.fromEntity(this.cartRepository.save(CartEntity.builder()
+                .memberEntity(memberEntity)
+                .build()));
     }
 
-    //내 장바구니 검색
-    public List<SearchCart.Product> searchCart(String totalToken) {
-        String userName = jwtToken.getUserName(totalToken);
-        MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(NotExistsAccount::new);
-        List<CartEntity> cartEntityList =
-                this.cartRepository.findAllByMemberEntity(memberEntity);
+    @Transactional
+    public void removeAllCartItem() {
+        MemberEntity memberEntity = this.jwtToken.getMemberEntityFromAuthentication();
 
-        if (cartEntityList.isEmpty()) {
-            throw new DoNotHaveAnyProductInShoppingCart();
-        }
+        CartEntity cartEntity = this.cartRepository.findByMemberEntity(memberEntity)
+                .orElseThrow(NotExistsTokenException::new);
 
-        return cartEntityList.stream().map(product -> new SearchCart.Product(product.getProductEntity().getProductId(),
-                        product.getProductEntity().getProductName(), product.getAmount(),
-                        product.getUnitPrice(), product.getTotalPrice()))
-                .collect(Collectors.toList());
+        this.cartItemRepository.deleteAllByCartEntity(cartEntity);
     }
-
-    //장바구니 상품 삭제
-    public ProductEntity deleteCart(Long productId, String totalToken) {
-        ProductEntity productEntity = this.productRepository.findByProductId(productId)
-                .orElseThrow(NotExistsProduct::new);
-
-        String userName = jwtToken.getUserName(totalToken);
-
-        MemberEntity memberEntity = this.memberRepository.findByName(userName)
-                .orElseThrow(NotExistsAccount::new);
-
-        this.cartRepository.deleteByProductEntityAndMemberEntity(productEntity, memberEntity);
-
-        return productEntity;
-    }
-
 }

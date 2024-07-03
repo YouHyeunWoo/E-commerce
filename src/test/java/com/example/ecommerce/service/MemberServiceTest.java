@@ -1,7 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.MemberEntity;
-import com.example.ecommerce.exception.impl.NotMatchPassword;
+import com.example.ecommerce.exception.impl.NotMatchPasswordException;
 import com.example.ecommerce.model.auth.Auth;
 import com.example.ecommerce.model.auth.LogIn;
 import com.example.ecommerce.repository.MemberRepository;
@@ -141,7 +141,7 @@ class MemberServiceTest {
                 .willReturn(false);
 
         //when
-        NotMatchPassword exception = assertThrows(NotMatchPassword.class, () ->
+        NotMatchPasswordException exception = assertThrows(NotMatchPasswordException.class, () ->
                 memberService.logIn(member));
 
         //then

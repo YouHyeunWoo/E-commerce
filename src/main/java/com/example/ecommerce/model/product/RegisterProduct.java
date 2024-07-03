@@ -2,6 +2,7 @@ package com.example.ecommerce.model.product;
 
 import com.example.ecommerce.domain.MemberEntity;
 import com.example.ecommerce.domain.ProductEntity;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,9 +17,11 @@ public class RegisterProduct {
         @NotBlank
         private String productName;
         @NotNull
+        @Min(10)
         private Long price;
         @NotNull
-        private Long amount;
+        @Min(1)
+        private Long stock;
         private String explanation;
 
         public ProductEntity toEntity(MemberEntity memberEntity) {
@@ -26,7 +29,7 @@ public class RegisterProduct {
                     .memberEntity(memberEntity)
                     .productName(this.productName)
                     .price(this.price)
-                    .amount(this.amount)
+                    .stock(this.stock)
                     .explanation(this.explanation)
                     .registerDate(LocalDateTime.now())
                     .build();
@@ -39,7 +42,7 @@ public class RegisterProduct {
         private Long productId;
         private String productName;
         private Long price;
-        private Long amount;
+        private Long stock;
         private String explanation;
         private String sellerName;
 
@@ -48,7 +51,7 @@ public class RegisterProduct {
                     .productId(productEntity.getProductId())
                     .productName(productEntity.getProductName())
                     .price(productEntity.getPrice())
-                    .amount(productEntity.getAmount())
+                    .stock(productEntity.getStock())
                     .sellerName(productEntity.getMemberEntity().getName())
                     .explanation(productEntity.getExplanation())
                     .build();
