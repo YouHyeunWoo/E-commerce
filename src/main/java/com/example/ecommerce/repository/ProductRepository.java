@@ -19,6 +19,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     Optional<ProductEntity> findByProductNameAndMemberEntity(String productName, MemberEntity memberEntity);
 
+    Optional<ProductEntity> findByProductIdAndMemberEntity(Long productId, MemberEntity memberEntity);
+
     List<ProductEntity> findAllByMemberEntity(MemberEntity memberEntity);
 
     Optional<ProductEntity> findByProductId(Long productId);
@@ -28,5 +30,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findAllByProductName(String productName, Pageable pageable);
 
     @Transactional
-    void deleteByProductNameAndMemberEntity(String productName, MemberEntity memberEntity);
+    void deleteByProductIdAndMemberEntity(Long productId, MemberEntity memberEntity);
 }

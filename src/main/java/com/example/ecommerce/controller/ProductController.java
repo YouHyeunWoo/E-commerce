@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class ProductController {
     @PostMapping("/product")
     @PreAuthorize("hasAuthority('SELLER')")
     public RegisterProduct.Response productRegistration(
-            @Valid @RequestBody RegisterProduct.Registration request) {
-        return this.productService.registerProduct(request);
+            @RequestPart(value = "product") @Valid RegisterProduct.Registration request,
+            @RequestPart(value = "productImage") MultipartFile multipartFile) {
+        return this.productService.registerProduct(request, multipartFile);
     }
 
     //내가 등록한 상품 조회
@@ -54,14 +56,13 @@ public class ProductController {
     public ModifyProduct.Response modifyProduct(
             @RequestBody ModifyProduct.Request request) {
         return ModifyProduct.Response.fromEntity(this.productService
-                        .modifyProduct(request));
+                .modifyProduct(request));
     }
 
     //상품 삭제
-    @DeleteMapping("/product")
+    @DeleteMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('SELLER')")
-    public DeleteProduct.Response removeProduct(
-            @RequestBody DeleteProduct.Request deleteRequest) {
-        return this.productService.deleteProduct(deleteRequest);
+    public DeleteProduct.Response removeProduct(@PathVariable Long productId) {
+        return this.productService.deleteProduct(productId);
     }
 }

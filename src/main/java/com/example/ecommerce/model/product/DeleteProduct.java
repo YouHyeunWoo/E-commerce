@@ -1,15 +1,17 @@
 package com.example.ecommerce.model.product;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 public class DeleteProduct {
-    @Data
+    @Getter
+    @AllArgsConstructor
     public static class Request {
         private String productName;
     }
 
-    @Data
+    @Getter
     @Builder
     public static class Response {
         private String productName;

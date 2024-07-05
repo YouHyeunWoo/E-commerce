@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "product")
 @NoArgsConstructor
@@ -31,6 +32,9 @@ public class ProductEntity {
 
     private LocalDateTime modifiedDate;
 
+    @OneToMany(mappedBy = "productEntity")
+    private List<ProductImageEntity> productImageEntityList;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
@@ -42,10 +46,10 @@ public class ProductEntity {
         this.modifiedDate = LocalDateTime.now();
     }
 
-    public void decreaseStock(Long quantity){
-        if(this.stock >= quantity){
+    public void decreaseStock(Long quantity) {
+        if (this.stock >= quantity) {
             this.stock -= quantity;
-        }else{
+        } else {
             throw new OutOfStockException();
         }
     }

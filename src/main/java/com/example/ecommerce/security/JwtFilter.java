@@ -31,7 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
         //토큰이 만료된 토큰인지 아닌지 검증
         if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
             Authentication authentication = this.tokenProvider.getAuthentication(token);
-            log.info(authentication.getAuthorities().toString());
             //ContextHolder의 Context에 사용자의 UserDetails를 담아 한번의 요청에 대한 임시 세션을 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
