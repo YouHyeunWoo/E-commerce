@@ -4,6 +4,7 @@ import com.example.ecommerce.domain.MemberEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -58,7 +59,8 @@ public class Auth {
     }
 
     //회원 탈퇴에 사용할 클래스
-    @Data
+    @Getter
+    @AllArgsConstructor
     public static class Withdrawal {
         private String name;
         private String password;

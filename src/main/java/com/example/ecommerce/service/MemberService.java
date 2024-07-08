@@ -57,10 +57,12 @@ public class MemberService implements UserDetailsService {
 
     //기존 access토큰 만료 시 새로운 토큰 발급
     public LogIn.Response getNewToken(String refreshToken) {
-        String token = refreshToken;
-        if (!ObjectUtils.isEmpty(refreshToken) && refreshToken.startsWith(TOKEN_PREFIX)) {
-            token = refreshToken.substring(TOKEN_PREFIX.length()).trim();
+        if (ObjectUtils.isEmpty(refreshToken) || !refreshToken.startsWith(TOKEN_PREFIX)) {
+            throw new TokenIsEmptyException();
         }
+
+        String token = refreshToken.substring(TOKEN_PREFIX.length()).trim();
+
         RefreshToken tokenAndUserId = this.refreshTokenRepository.findById(token)
                 .orElseThrow(NotExistsTokenException::new);
 
